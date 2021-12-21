@@ -35,7 +35,7 @@ namespace TabTest.Client.Shared
             }
             else
             {
-                AddTab("首页","/");
+                AddTab("首页", "/");
             }
         }
         public void GoTo(string title, string url)
@@ -65,7 +65,7 @@ namespace TabTest.Client.Shared
                 NavigationManager.NavigateTo(url);
             }
         }
-        public void AddTab(string title, string url)
+        public void AddTab(string title, string url, bool isScrollToTab = true)
         {
             Title = title;
             Pages.ForEach(x =>
@@ -84,7 +84,10 @@ namespace TabTest.Client.Shared
             }
             else
             {
-                selTab.TabWidth = 0;
+                if (isScrollToTab)
+                {
+                    selTab.TabWidth = 0;
+                }
                 selTab.IsActive = true;
             }
             NavigationManager.NavigateTo(url);

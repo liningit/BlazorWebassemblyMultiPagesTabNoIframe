@@ -96,7 +96,7 @@ namespace TabTest.Client.Shared
                 }
                 await ScrollToTab(Tabs[pre]);
             }
-            TabSetTool.AddTab(tab.Title, tab.Url);
+            TabSetTool.AddTab(tab.Title, tab.Url, false);
 
         }
 
