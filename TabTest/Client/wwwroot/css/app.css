@@ -1,4 +1,4 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+﻿@import url('/lib/bootstrap-icons/bootstrap-icons.css');
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -9,7 +9,7 @@ h1:focus {
 }
 
 a, .btn-link {
-    color: #0071c1;
+    color: #0077cc;
 }
 
 .btn-primary {
@@ -32,6 +32,25 @@ a, .btn-link {
 
 .validation-message {
     color: red;
+}
+
+.flex-grow-1 {
+    min-height: 0px;
+}
+
+.queryRow {
+    --bs-gutter-x: 0.75rem;
+    --bs-gutter-y: 0.75rem;
+}
+
+.queryGroup {
+    --bs-gutter-x: 0.25rem;
+    --bs-gutter-y: 0.25rem;
+}
+
+
+.queryInput {
+    width: 150px;
 }
 
 #blazor-error-ui {

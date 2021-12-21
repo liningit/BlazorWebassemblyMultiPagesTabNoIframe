@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>TabTest</title>
     <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="TabTest.Client.styles.css" rel="stylesheet" />
 </head>
@@ -20,6 +20,22 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        window.GetTabWidth = (index) => {
+            var lst = document.querySelectorAll('.middletab-tabs li');
+            if (lst.length > index) {
+                return lst[index].offsetWidth;
+            }
+            return 0;
+        }
+        window.GetWidth = (query) => {
+            var obj = document.querySelector(query);
+            if (obj) {
+                return obj.offsetWidth;
+            }
+            return 0;
+        }
+    </script>
 </body>
 
 </html>

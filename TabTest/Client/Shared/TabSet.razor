@@ -1,0 +1,49 @@
+﻿@using System.Text
+@inherits ComponentBase
+
+
+
+<!-- Display the tab headers -->
+
+<ul class="nav-my-tab">
+    <li class="leftbackward">
+        <a href="#" onclick="@MoveLeft">
+            <i class="bi bi-chevron-double-left"></i>
+        </a>
+    </li>
+    <li class="rightforward">
+        <a href="#" onclick="@CloseOther" title="关闭其他" style="border-right:1px #ddd solid">
+            <i class="bi bi-x-circle"></i>
+        </a>
+        <a href="#" onclick="@MoveRight">
+            <i class="bi bi-chevron-double-right"></i>
+        </a>
+    </li>
+    <li class="middletab">
+        <div class="middletab-tabs" style="left:@(0-OffsetLeft)px">
+            <ul class="nav nav-tabs">
+                @foreach (var item in Tabs)
+                {
+                    var tempItem = item;
+                    <li @key="item" class="nav-item @(item.IsActive?"active":"")">
+                        <a @onclick="@(async e =>await ActivateTab(tempItem))" class="nav-link" role="button">
+                            @item.Title
+                            <i class="bi bi-x" @onclick="@(async e =>await CloseTab(tempItem))"></i>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </li>
+</ul>
+
+
+<div class="nav-tabs-body" style="height: calc(100% - 40px);">
+    @foreach (var item in Tabs)
+    {
+        <div @key="item" style="@item.Style">
+            @item.Title +  @item.Url
+            @item.Body
+        </div>
+    }
+</div>

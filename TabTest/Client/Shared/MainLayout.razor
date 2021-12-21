@@ -2,16 +2,28 @@
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <div style="width:250px; height: 100vh;overflow-y:scroll;overflow-x:visible">
+
+            <NavMenu />
+        </div>
     </div>
 
     <main>
+
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+
+            <button type="button" class="btn btn-link">退出</button>
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
+        <div style="height: calc(100% - 60px);">
+            <TabSet />
+        </div>
     </main>
 </div>
+@code {
+
+    public void cli()
+    {
+        StateHasChanged();
+    }
+}
