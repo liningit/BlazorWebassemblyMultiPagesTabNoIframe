@@ -16,18 +16,23 @@ namespace TabTest.Client.Shared
         [Inject]
         public NavigationManager Navmgr { get; set; }
 
-        [Parameter]
-        public RenderFragment<RenderFragment> ChildContent { get; set; }
+
         protected override void Render(RenderTreeBuilder builder)
         {
-            var layoutType = RouteData.PageType.GetCustomAttribute<LayoutAttribute>()?.LayoutType ?? DefaultLayout;
+
 
             var body = CreateBody(RouteData, Navmgr.Uri);
 
+            RenderContentInDefaultLayout(builder, body, true);
+
+        }
+
+        protected void RenderContentInDefaultLayout(RenderTreeBuilder builder, RenderFragment body, bool isLoad = false)
+        {
+            var layoutType = RouteData.PageType.GetCustomAttribute<LayoutAttribute>()?.LayoutType ?? DefaultLayout;
             builder.OpenComponent<CascadingValue<ReuseTabsRouteView>>(0);
             builder.AddAttribute(1, "Name", "RouteView");
             builder.AddAttribute(2, "Value", this);
-
             builder.AddAttribute(3, "ChildContent", (RenderFragment)(b =>
             {
                 b.OpenComponent(20, layoutType);
@@ -37,26 +42,40 @@ namespace TabTest.Client.Shared
 
             builder.CloseComponent();
             var url = "/" + Navmgr.ToBaseRelativePath(Navmgr.Uri);
-            if (url != "/#")
+
+            if (string.Equals(url, "/Login", StringComparison.CurrentCultureIgnoreCase))
             {
-                var selTab = TabSetTool.Pages.FirstOrDefault(m => m.Url == url && (m.Title == TabSetTool.Title || string.IsNullOrEmpty(m.Title)));
-                if (selTab == null)
+                TabSetTool.Pages.Clear();
+                return;
+            }
+
+            var selTab = TabSetTool.Pages.FirstOrDefault(m => !m.IsInited);
+
+
+
+            if (selTab == null)
+            {
+                if (TabSetTool.Pages.Count == 0)
                 {
                     TabSetTool.Pages.Add(new Tab
                     {
                         Body = body,
                         Url = url,
-                        Title = TabSetTool.Title,
+                        IsInited = isLoad,
                         IsActive = true,
                     });
                 }
-                else
+            }
+            else
+            {
+                selTab.Body = body;
+                selTab.IsActive = true;
+                if (isLoad)
                 {
-                    selTab.Title = TabSetTool.Title;
-                    selTab.Body = body;
-                    selTab.IsActive = true;
+                    selTab.IsInited = true;
                 }
             }
+
         }
 
         private RenderFragment CreateBody(RouteData routeData, string url)

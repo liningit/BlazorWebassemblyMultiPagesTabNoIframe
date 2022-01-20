@@ -11,12 +11,12 @@ namespace TabTest.Client.Shared
 
         public NavigationManager NavigationManager { get; set; }
 
-        public string Title { get; set; }
         public List<Tab> Pages { get; } = new();
 
-        public void CloseActiveTab()
+        public async Task CloseActiveTab()
         {
             var index = Pages.FindIndex(m => m.IsActive);
+            var closeTab = Pages[index];
             Pages.RemoveAt(index);
             Tab activeTab = null;
             if (index > 0)
@@ -37,8 +37,12 @@ namespace TabTest.Client.Shared
             {
                 AddTab("首页", "/");
             }
+            if (closeTab?.OnClose != null)
+            {
+                await closeTab.OnClose();
+            }
         }
-        public void GoTo(string title, string url)
+        public void GoTo(string title, string url, Func<Task> onClose = null)
         {
             var index = Pages.FindIndex(m => m.IsActive);
             if (index < 0)
@@ -55,19 +59,22 @@ namespace TabTest.Client.Shared
                     AddTab(title, url);
                     return;
                 }
-                Title = title;
                 Pages[index] = new Tab
                 {
                     Url = url,
                     Title = title,
                     IsActive = true,
+                    OnClose = onClose
                 };
                 NavigationManager.NavigateTo(url);
             }
         }
-        public void AddTab(string title, string url, bool isScrollToTab = true)
+        public void AddTab(string title, string url, bool isScrollToTab)
         {
-            Title = title;
+            AddTab(title, url, null, isScrollToTab);
+        }
+        public void AddTab(string title, string url, Func<Task> onClose = null, bool isScrollToTab = true)
+        {
             Pages.ForEach(x =>
             {
                 x.IsActive = false;
@@ -80,6 +87,7 @@ namespace TabTest.Client.Shared
                     Url = url,
                     Title = title,
                     IsActive = true,
+                    OnClose = onClose
                 });
             }
             else
@@ -88,6 +96,11 @@ namespace TabTest.Client.Shared
                 {
                     selTab.TabWidth = 0;
                 }
+                if (string.IsNullOrEmpty(selTab.Title))
+                {
+                    selTab.Title = title;
+                }
+                selTab.OnClose = onClose;
                 selTab.IsActive = true;
             }
             NavigationManager.NavigateTo(url);

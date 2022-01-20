@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -12,6 +13,8 @@ namespace TabTest.Client.Shared
         IJSRuntime JS { get; set; }
         [Inject]
         public TabSetTool TabSetTool { get; set; }
+        [Inject]
+        public ILocalStorageService LocalStorage { get; set; }
 
         [CascadingParameter(Name = "RouteView")]
         public ReuseTabsRouteView RouteView { get; set; }
@@ -71,6 +74,10 @@ namespace TabTest.Client.Shared
                     await ActivateTab(activeTab);
                 }
             }
+            if (tab.OnClose != null)
+            {
+                await tab.OnClose();
+            }
         }
         private async Task CloseOther()
         {
@@ -110,6 +117,17 @@ namespace TabTest.Client.Shared
             for (var i = 0; i < Tabs.Count; i++)
             {
                 var item = Tabs[i];
+                if (item.IsActive)
+                {
+                    if (string.IsNullOrEmpty(item.Title))
+                    {
+                        item.Title = await LocalStorage.GetItemAsStringAsync("Title-" + item.Url);
+                    }
+                    else
+                    {
+                        await LocalStorage.SetItemAsStringAsync("Title-" + item.Url, item.Title);
+                    }
+                }
                 if (item.TabWidth <= 0)
                 {
                     hasAdd = true;

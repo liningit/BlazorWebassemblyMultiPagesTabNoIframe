@@ -41,9 +41,17 @@
 <div class="nav-tabs-body" style="height: calc(100% - 40px);">
     @foreach (var item in Tabs)
     {
-        <div @key="item" style="@item.Style">
-            @item.Title +  @item.Url
-            @item.Body
+        <div @key="item" style="@item.Style">          
+            @if (item.Body != null)
+            {
+                @item.Body
+            }
+            else
+            {
+                <p>
+                    "加载中"
+                </p>
+            }
         </div>
     }
 </div>
